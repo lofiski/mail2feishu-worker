@@ -1,0 +1,20 @@
+name = "mail2feishu-worker"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+[observability]
+enabled = true
+
+# 多个 Webhook 目标以 JSON 数组的形式配置在 WEBHOOKS 环境变量中。
+# 由于其中通常包含飞书签名密钥 / Telegram Bot Token 等敏感信息，
+# 不建议直接写在这里提交到仓库，请在 Cloudflare 控制台的
+# Worker -> Settings -> Variables and Secrets 中以 Secret 方式配置。
+# 下面仅作为格式示例（本地开发可复制到 .dev.vars 中使用）：
+#
+# WEBHOOKS = '''
+# [
+#   {"type":"feishu","url":"https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx","secret":"可选的签名密钥"},
+#   {"type":"telegram","botToken":"123456:ABC-DEF...","chatId":"123456789"},
+#   {"type":"generic","url":"https://example.com/webhook","headers":{"Authorization":"Bearer xxx"}}
+# ]
+# '''
