@@ -4,13 +4,21 @@ import { sendTelegram } from './telegram';
 import { sendGeneric } from './generic';
 
 export function loadWebhookConfigs(env: Env): WebhookConfig[] {
-  if (!env.WEBHOOKS || !env.WEBHOOKS.trim()) return [];
+  const raw = env.WEBHOOKS;
+
+  if (raw === undefined || raw === null || raw === '') return [];
 
   let parsed: unknown;
-  try {
-    parsed = JSON.parse(env.WEBHOOKS);
-  } catch (err) {
-    throw new Error(`WEBHOOKS 环境变量不是合法的 JSON：${(err as Error).message}`);
+  if (typeof raw === 'string') {
+    if (!raw.trim()) return [];
+    try {
+      parsed = JSON.parse(raw);
+    } catch (err) {
+      throw new Error(`WEBHOOKS 环境变量不是合法的 JSON：${(err as Error).message}`);
+    }
+  } else {
+    // Cloudflare 控制台里变量类型选 "JSON" 时，env.WEBHOOKS 会被自动解析成数组，不再是字符串
+    parsed = raw;
   }
 
   if (!Array.isArray(parsed)) {
